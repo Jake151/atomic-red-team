@@ -211,6 +211,13 @@ atomic_tests:
       cmd /c "PathToAtomicsFolder\..\ExternalPayloads\ez_setup.py"
       cmd /c "PathToAtomicsFolder\..\ExternalPayloads\get-pip.py"
   - description: |
+     pip-autoremove must be installed 
+    prereq_command: |
+      pip-autoremove -h >nul 2>&1
+      exit /b %errorlevel%
+    get_prereq_command: |
+      pip install pypykatz
+  - description: |
       pypykatz must be installed and part of PATH
     prereq_command: |
       pypykatz -h >nul 2>&1
@@ -220,6 +227,9 @@ atomic_tests:
   executor:
     command: |
       pypykatz live lsa
+    cleanup_command: |
+      del "%temp%\nanodump.dmp" >nul 2> nul
+      pip-autoremove pypykatz >nul 2> nul
     name: command_prompt
     elevation_required: true
 - name: Dump LSASS.exe Memory using Out-Minidump.ps1

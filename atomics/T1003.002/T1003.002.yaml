@@ -43,7 +43,16 @@ atomic_tests:
       py -3 -m pip --version >nul 2>&1
       exit /b %errorlevel%
     get_prereq_command: |
-      echo "PIP must be installed manually"
+      New-Item -Type Directory "PathToAtomicsFolder\..\ExternalPayloads\" -ErrorAction ignore -Force | Out-Null
+      invoke-webrequest "https://bootstrap.pypa.io/ez_setup.py" -outfile "PathToAtomicsFolder\..\ExternalPayloads\ez_setup.py"      
+      invoke-webrequest "https://bootstrap.pypa.io/get-pip.py" -outfile "PathToAtomicsFolder\..\ExternalPayloads\get-pip.py"
+      cmd /c "PathToAtomicsFolder\..\ExternalPayloads\ez_setup.py"
+      cmd /c "PathToAtomicsFolder\..\ExternalPayloads\get-pip.py"
+  - description: |
+     pip-autoremove must be installed 
+    prereq_command: |
+      pip-autoremove -h >nul 2>&1
+      exit /b %errorlevel%
   - description: |
       pypykatz must be installed and part of PATH
     prereq_command: |
@@ -54,6 +63,8 @@ atomic_tests:
   executor:
     command: |
       pypykatz live registry
+    cleanup_command: |
+      pip-autoremove pypykatz >nul 2> nul
     name: command_prompt
     elevation_required: true
 - name: esentutl.exe SAM copy

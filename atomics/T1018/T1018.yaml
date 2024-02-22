@@ -187,6 +187,11 @@ atomic_tests:
       cmd /c "PathToAtomicsFolder\..\ExternalPayloads\ez_setup.py"
       cmd /c "PathToAtomicsFolder\..\ExternalPayloads\get-pip.py"
   - description: |
+     pip-autoremove must be installed 
+    prereq_command: |
+      pip-autoremove -h >nul 2>&1
+      exit /b %errorlevel%
+  - description: |
       adidnsdump must be installed and part of PATH
     prereq_command: |
       if (cmd /c adidnsdump -h) {exit 0} else {exit 1}
@@ -195,6 +200,8 @@ atomic_tests:
   executor:
     command: |
       adidnsdump -u #{user_name} -p #{acct_pass} --print-zones #{host_name}
+    cleanup_command: |
+      pip-autoremove adidnsdump >nul 2> nul
     name: command_prompt
     elevation_required: true
 - name: Adfind - Enumerate Active Directory Computer Objects
