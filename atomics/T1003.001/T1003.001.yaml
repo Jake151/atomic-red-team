@@ -212,16 +212,15 @@ atomic_tests:
   - description: |
       pypykatz must be installed 
     prereq_command: |
-      cmd /c "PathToAtomicsFolder\..\ExternalPayloads\pypykatz\bin\pypykatz -h > nul 2> nul" 
+      if (Get-Command "PathToAtomicsFolder\..\ExternalPayloads\python_packages\pypykatz\bin\pypykatz" -errorAction SilentlyContinue) { exit 0 } else { exit 1 }
     get_prereq_command: |
       $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
-      pip install -t "PathToAtomicsFolder\..\ExternalPayloads\pypykatz" pypykatz
+      pip install --no-cache-dir -t "PathToAtomicsFolder\..\ExternalPayloads\python_packages\pypykatz" pypykatz
   executor:
     command: |
-      "PathToAtomicsFolder\..\ExternalPayloads\pypykatz\bin\pypykatz" live lsa
+      "PathToAtomicsFolder\..\ExternalPayloads\python_packages\pypykatz\bin\pypykatz" live lsa
     cleanup_command: |
       del "%temp%\nanodump.dmp" > nul 2> nul
-      del /Q "PathToAtomicsFolder\..\ExternalPayloads\pypykatz" >nul 2> nul
     name: command_prompt
     elevation_required: true
 - name: Dump LSASS.exe Memory using Out-Minidump.ps1
