@@ -29,14 +29,14 @@ atomic_tests:
   - description: |
       Finds where gpg is located
     prereq_command: |
-      which_gpg=`which gpg`
+      which gpg
     get_prereq_command: |
       (which pkg && pkg install -y gnupg)||(which yum && yum -y install epel-release gpg)||(which apt-get && DEBIAN_FRONTEND=noninteractive apt-get install -y gpg)
   executor:
     name: sh
     elevation_required: false
     command: |
-      echo "#{pwd_for_encrypted_file}" | $which_gpg --batch --yes --passphrase-fd 0 --cipher-algo #{encryption_alg} -o #{encrypted_file_path} -c #{input_file_path}
+      echo "#{pwd_for_encrypted_file}" | $(which gpg) --batch --yes --passphrase-fd 0 --cipher-algo #{encryption_alg} -o #{encrypted_file_path} -c #{input_file_path}
     cleanup_command: |
       rm #{encrypted_file_path}
 
@@ -64,14 +64,14 @@ atomic_tests:
   - description: |
       Finds where 7z is located
     prereq_command: |
-      which_7z=`which 7z`
+      which 7z
     get_prereq_command: |
-      (which pkg && pkg install -y 7-zip)
+      (which pkg && pkg install -y 7-zip)||(which yum && yum -y install p7zip p7zip-plugins)||(which apt-get && DEBIAN_FRONTEND=noninteractive apt-get install -y p7zip-full)
   executor:
     name: sh
     elevation_required: false
     command: |
-      $which_7z a -p#{pwd_for_encrypted_file} #{encrypted_file_path} #{input_file_path}
+      $(which 7z) a -p#{pwd_for_encrypted_file} #{encrypted_file_path} #{input_file_path}
     cleanup_command: |
       $which_7z e #{encrypted_file_path}
       rm #{encrypted_file_path}
