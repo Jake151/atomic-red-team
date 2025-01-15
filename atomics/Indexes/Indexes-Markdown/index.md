@@ -2638,6 +2638,8 @@
   - Atomic Test #6: Discover System Language by Environment Variable Query [linux]
   - Atomic Test #7: Discover System Language with dism.exe [windows]
   - Atomic Test #8: Discover System Language by Windows API Query [windows]
+  - Atomic Test #9: Discover System Language with WMIC [windows]
+  - Atomic Test #10: Discover System Language with Powershell [windows]
 - [T1012 Query Registry](../../T1012/T1012.md)
   - Atomic Test #1: Query Registry [windows]
   - Atomic Test #2: Query Registry with Powershell cmdlets [windows]
@@ -2804,7 +2806,8 @@
 - T1592.002 Software [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
 - T1593.001 Social Media [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
 - T1589.001 Credentials [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
-- T1595.003 Wordlist Scanning [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
+- [T1595.003 Active Scanning: Wordlist Scanning](../../T1595.003/T1595.003.md)
+  - Atomic Test #1: Web Server Wordlist Scan [windows, linux, macos]
 - T1591.004 Identify Roles [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
 - T1598 Phishing for Information [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
 - T1595.001 Scanning IP Blocks [CONTRIBUTE A TEST](https://github.com/redcanaryco/atomic-red-team/wiki/Contributing)
